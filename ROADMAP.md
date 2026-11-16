@@ -1,4 +1,4 @@
-# KaamVori — Development Roadmap
+# KAAMVORI — Development Roadmap
 
 Living checklist. Update status after each verified phase.
 

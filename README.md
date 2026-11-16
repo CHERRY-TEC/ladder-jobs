@@ -1,6 +1,6 @@
-# KaamVori — Every Person Deserves an Opportunity
+# KAAMVORI — Every Person Deserves an Opportunity
 
-KaamVori is a job board that covers the full range of work: internships, household and daily-wage jobs,
+KAAMVORI is a job board that covers the full range of work: internships, household and daily-wage jobs,
 delivery gigs, skilled trades, office roles, and professional jobs — with the
 education requirement shown up front on every listing.
 

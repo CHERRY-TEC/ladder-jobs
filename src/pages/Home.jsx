@@ -146,7 +146,7 @@ export default function Home() {
                 <span className="hl">Deserves an Opportunity.</span>
               </h1>
               <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-soft">
-                KaamVori brings together housekeeping work, internships, delivery gigs, skilled trades,
+                KAAMVORI brings together housekeeping work, internships, delivery gigs, skilled trades,
                 office roles and professional jobs — one board that says up front what education each job needs.
               </p>
 

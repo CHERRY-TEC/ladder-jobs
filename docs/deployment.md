@@ -1,4 +1,4 @@
-# KaamVori — deployment (Vercel) & operations
+# KAAMVORI — deployment (Vercel) & operations
 
 ## Frontend (Vercel)
 

@@ -38,7 +38,7 @@ export default function RequireAuth({ role, children }) {
     return (
       <Notice
         title="Database not set up yet"
-        body="You are signed in, but the KaamVori database tables don't exist in this project. Run the migrations first — see supabase/README.md."
+        body="You are signed in, but the KAAMVORI database tables don't exist in this project. Run the migrations first — see supabase/README.md."
       />
     )
   }
