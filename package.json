@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/prerender-jobs.mjs",
     "preview": "vite preview",
-    "ingest": "node scripts/ingest-jobs.mjs"
+    "ingest": "node scripts/ingest-jobs.mjs",
+    "prerender": "node scripts/prerender-jobs.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.119.0",
