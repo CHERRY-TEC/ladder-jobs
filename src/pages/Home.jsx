@@ -317,21 +317,20 @@ export default function Home() {
           </section>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-          <aside>
-            <FilterPanel
-              jobs={jobs}
-              params={params}
-              sort={sort}
-              view={view}
-              group={group}
-              onToggle={(key, value) => (key === 'cat' ? toggleCat(value) : setParam(key, value))}
-              onClear={clearFilters}
-              onSort={(value) => setParam('sort', value)}
-              onView={(value) => setParam('view', value)}
-              onGroup={(value) => setParam('group', value)}
-            />
-          </aside>
+        <div className="space-y-6">
+          <FilterPanel
+            jobs={jobs}
+            params={params}
+            sort={sort}
+            view={view}
+            group={group}
+            variant="top"
+            onToggle={(key, value) => (key === 'cat' ? toggleCat(value) : setParam(key, value))}
+            onClear={clearFilters}
+            onSort={(value) => setParam('sort', value)}
+            onView={(value) => setParam('view', value)}
+            onGroup={(value) => setParam('group', value)}
+          />
 
           <div>
             {filtered.length > 0 ? (
@@ -347,7 +346,7 @@ export default function Home() {
                       </div>
                     )}
                     {view === 'grid' ? (
-                      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                         {section.items.map((job) => (
                           <Item key={job.id} job={job} />
                         ))}

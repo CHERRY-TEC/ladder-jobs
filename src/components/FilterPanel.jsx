@@ -14,9 +14,13 @@ import {
   matchesWhen,
 } from '../lib/format.js'
 
-function FilterGroup({ title, children, hint }) {
+function FilterGroup({ title, children, hint, className = '', top = false }) {
   return (
-    <fieldset className="border-t border-line px-4 py-4 first:border-t-0">
+    <fieldset
+      className={`min-w-0 border-t border-line px-4 py-4 ${
+        top ? 'lg:border-t-0 lg:border-l lg:first:border-l-0' : 'first:border-t-0'
+      } ${className}`}
+    >
       <legend className="sr-only">{title}</legend>
       <h3 className="mb-3 text-[13px] font-semibold text-mute">{title}</h3>
       {hint && <p className="-mt-2 mb-3 text-xs text-mute">{hint}</p>}
@@ -43,7 +47,7 @@ function Check({ checked, label, count, onChange }) {
 /**
  * Facets and arrangement controls for the board.
  */
-export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, sort, view = 'grid', group = 'none', onView, onGroup }) {
+export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, sort, view = 'grid', group = 'none', onView, onGroup, variant = 'side' }) {
   const countBy = (fn) => jobs.filter(fn).length
   const activeCats = params.get('cat')?.split(',').filter(Boolean) ?? []
   const activeType = params.get('type') ?? ''
@@ -63,22 +67,28 @@ export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, s
     params.get('q') ||
     params.get('loc')
 
+  const isTop = variant === 'top'
+
   return (
-    <div className="overflow-hidden rounded-xl border border-line bg-white shadow-sm">
-      <div className="flex items-center justify-between gap-2 border-b border-line bg-[#fdfbf7] px-4 py-3.5">
-        <h2 className="display text-lg">Filters</h2>
+    <details className="overflow-hidden rounded-xl border border-line bg-white shadow-sm" open={isTop}>
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-2 border-b border-line bg-[#fdfbf7] px-4 py-3.5">
+        <div>
+          <h2 className="display text-lg">Filters & arrangement</h2>
+          <p className="mt-0.5 text-xs text-mute">View, group, sort and filter listings</p>
+        </div>
         {hasFilters && (
           <button
             type="button"
-            onClick={onClear}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); onClear() }}
             className="text-xs font-semibold text-accent underline underline-offset-2 hover:text-accent-hover"
           >
             Clear all
           </button>
         )}
-      </div>
+      </summary>
 
-      <FilterGroup title="Arrange jobs">
+      <div className={isTop ? 'grid gap-0 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5' : ''}>
+      <FilterGroup top={isTop} title="Arrange jobs" className={isTop ? 'md:col-span-2 lg:col-span-1' : ''}>
         <div className="space-y-3">
           <label className="block text-sm text-ink-soft">
             View
@@ -124,7 +134,7 @@ export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, s
         </div>
       </FilterGroup>
 
-      <FilterGroup title="Education needed" hint="The full 10-rung ladder — every listing states its rung.">
+      <FilterGroup top={isTop} title="Education needed" hint="The full 10-rung ladder — every listing states its rung.">
         {EDUCATION_LADDER.map((e) => (
           <Check
             key={e.id}
@@ -136,7 +146,7 @@ export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, s
         ))}
       </FilterGroup>
 
-      <FilterGroup title="Experience" hint="Listings that don't state a requirement are not counted here.">
+      <FilterGroup top={isTop} title="Experience" hint="Listings that don't state a requirement are not counted here.">
         {EXPERIENCE_LEVELS.map((x) => (
           <Check
             key={x.id}
@@ -148,7 +158,7 @@ export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, s
         ))}
       </FilterGroup>
 
-      <FilterGroup title="Pay" hint="Monthly equivalent — daily wages are converted at 26 days.">
+      <FilterGroup top={isTop} title="Pay" hint="Monthly equivalent — daily wages are converted at 26 days.">
         {PAY_THRESHOLDS.map((p) => (
           <Check
             key={p.id}
@@ -160,7 +170,7 @@ export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, s
         ))}
       </FilterGroup>
 
-      <FilterGroup title="Work mode">
+      <FilterGroup top={isTop} title="Work mode">
         {WORK_MODES.map((m) => (
           <Check
             key={m.id}
@@ -172,7 +182,7 @@ export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, s
         ))}
       </FilterGroup>
 
-      <FilterGroup title="Posted">
+      <FilterGroup top={isTop} title="Posted">
         {POSTED_WITHIN.map((d) => (
           <Check
             key={d.id}
@@ -184,7 +194,7 @@ export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, s
         ))}
       </FilterGroup>
 
-      <FilterGroup title="Category">
+      <FilterGroup top={isTop} title="Category">
         {Object.entries(CATEGORIES).map(([id, meta]) => (
           <Check
             key={id}
@@ -196,7 +206,7 @@ export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, s
         ))}
       </FilterGroup>
 
-      <FilterGroup title="Job type">
+      <FilterGroup top={isTop} title="Job type">
         {TYPES.map((t) => (
           <Check
             key={t}
@@ -207,6 +217,7 @@ export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, s
           />
         ))}
       </FilterGroup>
-    </div>
+      </div>
+    </details>
   )
 }
