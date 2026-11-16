@@ -5,7 +5,7 @@ import { AuthBanner } from './Login.jsx'
 import { checkRateLimit, formatRetryAfter } from '../lib/rateLimit.js'
 
 const inputClass =
-  'mt-1.5 w-full rounded-lg border border-line bg-white px-3 py-2.5 text-base placeholder:text-mute'
+  'mt-1.5 w-full rounded-lg border border-line bg-[#fdfbf7] px-3.5 py-3 text-base placeholder:text-mute transition-shadow focus:bg-white focus:shadow-[0_0_0_3px_var(--color-signal)]'
 
 const ROLES = [
   {
@@ -85,13 +85,16 @@ export default function Signup() {
 
   return (
     <div className="mx-auto max-w-md px-4 py-12">
-      <h1 className="display-tight text-4xl sm:text-5xl">Create your account</h1>
-      <p className="mt-2 text-mute">Free for job seekers. Employers start on the free plan.</p>
+      <div className="text-center">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">KAAMVORI</p>
+        <h1 className="display-tight mt-2 text-4xl sm:text-5xl">Create your account</h1>
+        <p className="mt-3 text-mute">Free for job seekers. Employers start on the free plan.</p>
+      </div>
 
       <AuthBanner />
 
-      <form onSubmit={onSubmit} className="mt-6" data-testid="signup-form">
-        <fieldset className="rounded-xl border border-line bg-white p-4">
+      <form onSubmit={onSubmit} className="mt-8" data-testid="signup-form">
+        <fieldset className="rounded-2xl border border-line bg-white p-5 shadow-sm">
           <legend className="px-2 text-sm font-bold">I am…</legend>
           <div className="grid gap-2">
             {ROLES.map((r) => (
@@ -114,7 +117,7 @@ export default function Signup() {
           </div>
         </fieldset>
 
-        <div className="mt-4 rounded-xl border border-line bg-white p-6">
+        <div className="mt-4 rounded-2xl border border-line bg-white p-6 shadow-sm sm:p-7">
           <label className="block text-sm font-bold">
             Full name
             <input

@@ -5,7 +5,7 @@ import { isSupabaseConfigured } from '../lib/supabase.js'
 import { checkRateLimit, formatRetryAfter } from '../lib/rateLimit.js'
 
 const inputClass =
-  'mt-1.5 w-full rounded-lg border border-line bg-white px-3 py-2.5 text-base placeholder:text-mute'
+  'mt-1.5 w-full rounded-lg border border-line bg-[#fdfbf7] px-3.5 py-3 text-base placeholder:text-mute transition-shadow focus:bg-white focus:shadow-[0_0_0_3px_var(--color-signal)]'
 
 export function AuthBanner() {
   if (isSupabaseConfigured) return null
@@ -52,14 +52,17 @@ export default function Login() {
 
   return (
     <div className="mx-auto max-w-md px-4 py-12">
-      <h1 className="display-tight text-4xl sm:text-5xl">Welcome back</h1>
-      <p className="mt-2 text-mute">Sign in to continue to your Ladder account.</p>
+      <div className="text-center">
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-accent">KAAMVORI</p>
+        <h1 className="display-tight mt-2 text-4xl sm:text-5xl">Welcome back</h1>
+        <p className="mt-3 text-mute">Sign in to continue to your account.</p>
+      </div>
 
       <AuthBanner />
 
       <form
         onSubmit={onSubmit}
-        className="mt-6 rounded-xl border border-line bg-white p-6"
+        className="mt-8 rounded-2xl border border-line bg-white p-6 shadow-sm sm:p-7"
         data-testid="login-form"
       >
         <label className="block text-sm font-bold">

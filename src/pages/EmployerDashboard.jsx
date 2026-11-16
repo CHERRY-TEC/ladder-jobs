@@ -118,7 +118,7 @@ export default function EmployerDashboard() {
           <li>· The <strong>Verified</strong> badge appears only after an admin approves your documents — nobody can set it themselves, including from this page.</li>
           <li>· New jobs go live only after moderation, so serious employers stand out from spam.</li>
           <li>· Applicants move through visible stages: Applied → Viewed → Shortlisted → Interview → Selected / Rejected.</li>
-          <li>· Ladder never charges a seeker to apply, and never charges you to be verified.</li>
+          <li>· KAAMVORI never charges a seeker to apply, and never charges you to be verified.</li>
         </ul>
       </div>
     </DashboardShell>

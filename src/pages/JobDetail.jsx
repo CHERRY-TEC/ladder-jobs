@@ -71,7 +71,7 @@ export default function JobDetail() {
       </Link>
 
       <div className="mt-4 grid gap-6 lg:grid-cols-[1fr_320px]">
-        <article className="rounded-xl border border-line bg-white p-5 sm:p-7">
+        <article className="rounded-xl border border-line bg-white p-6 shadow-sm sm:p-8">
           <div className="flex flex-wrap items-center gap-2">
             <CategoryTag category={job.category} />
             {job.mine && (
@@ -125,7 +125,7 @@ export default function JobDetail() {
             {href ? (
               <a
                 href={href}
-                className="mt-4 inline-block rounded-lg bg-accent px-5 py-3 font-semibold text-white transition-colors hover:bg-accent-hover"
+                className="mt-4 inline-block rounded-lg bg-accent px-5 py-3 font-semibold text-white shadow-sm transition-colors hover:bg-accent-hover"
               >
                 {job.contact.label}
               </a>
@@ -133,18 +133,18 @@ export default function JobDetail() {
               <p className="mt-4 font-semibold">{job.contact.value}</p>
             ) : (
               <p className="mt-4 text-sm text-mute">
-                The poster left no contact details on Ladder — nothing to call or click here.
+                The poster left no contact details on KAAMVORI — nothing to call or click here.
               </p>
             )}
             <p className="mt-4 max-w-md text-sm text-mute">
-              Ladder never asks for money. If a recruiter asks you to pay, walk away.
+              KAAMVORI never asks for money. If a recruiter asks you to pay, walk away.
             </p>
           </section>
         </article>
 
-        <aside className="h-fit overflow-hidden rounded-xl border border-line bg-white lg:sticky lg:top-24">
-          <div className="border-b border-line bg-signal px-4 py-4">
-            <p className="text-[13px] font-semibold text-ink-soft">Pay</p>
+        <aside className="h-fit overflow-hidden rounded-xl border border-line bg-white shadow-sm lg:sticky lg:top-24">
+          <div className="border-b border-line bg-signal/70 px-5 py-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.1em] text-ink-soft">Pay</p>
             <p className="display-tight mt-1 text-2xl">{job.salary}</p>
           </div>
 

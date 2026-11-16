@@ -71,7 +71,7 @@ export default function PostJob() {
         <div className="mt-5 flex flex-wrap gap-3">{actions}</div>
       </div>
       <p className="mt-6 max-w-xl text-sm leading-relaxed text-mute">
-        Ladder listings are real: they are reviewed by an admin before seekers see them, and the
+        KAAMVORI listings are real: they are reviewed by an admin before seekers see them, and the
         platform never charges a fee to post or to apply.
       </p>
     </div>
@@ -80,7 +80,7 @@ export default function PostJob() {
   if (!isAuthenticated) {
     return gate(
       'Post a job',
-      'Posting on Ladder needs an employer account — every vacancy is attached to a real company ' +
+      'Posting on KAAMVORI needs an employer account — every vacancy is attached to a real company ' +
         'profile so seekers know who is hiring. Creating one takes a minute.',
       <>
         <Link
