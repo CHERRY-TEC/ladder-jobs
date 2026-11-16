@@ -1,0 +1,10 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+scripts/.ingest-state.json
+scripts/ingest.log
+
+.vercel
+.env*
