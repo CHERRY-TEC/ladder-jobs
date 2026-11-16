@@ -210,8 +210,9 @@ export default function EmployerJobs() {
                         disabled={busyId === row.id}
                         className="rounded-lg px-2 py-1.5 text-xs font-semibold text-alert hover:underline disabled:opacity-50"
                         data-testid="close-vacancy"
+                        title="Mark vacancies as filled and remove from public board"
                       >
-                        Close
+                        Mark as filled
                       </button>
                     )}
                     {(row.status === 'closed' || row.status === 'rejected' || row.status === 'draft') && (

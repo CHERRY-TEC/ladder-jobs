@@ -243,14 +243,14 @@ export default function JobEdit() {
           <button
             type="button"
             onClick={() => {
-              if (window.confirm(`Close “${job.title}”? It stops appearing to seekers.`))
+              if (window.confirm(`Mark “${job.title}” as filled? It will be removed from the public board.`))
                 setStatus('closed')
             }}
             disabled={busy}
             className="rounded-lg border border-line bg-white px-4 py-2 text-sm font-semibold text-alert hover:border-mute disabled:opacity-50"
             data-testid="edit-close"
           >
-            Close listing
+            Mark as filled
           </button>
         )}
         {job.status === 'pending' && (

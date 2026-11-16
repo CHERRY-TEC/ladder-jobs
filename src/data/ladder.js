@@ -242,9 +242,9 @@ export const JOB_STATUS = {
     explain: 'Published and visible to every seeker on the board.',
   },
   closed: {
-    label: 'Closed',
+    label: 'Filled / closed',
     tone: 'muted',
-    explain: 'Taken down by you — it no longer appears in search. Re-submit it when you are hiring again.',
+    explain: 'Vacancies are filled or hiring is closed — it no longer appears on the public board. Re-submit if you need to hire again.',
   },
   rejected: {
     label: 'Rejected',
