@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import FilterPanel from '../components/FilterPanel.jsx'
 import JobRow from '../components/JobRow.jsx'
+import JobCard from '../components/JobCard.jsx'
 import StairNav from '../components/StairNav.jsx'
+import { CATEGORIES } from '../data/seed.js'
 import { useStore } from '../lib/store.jsx'
 import {
   matchesEducation,
@@ -14,6 +16,32 @@ import {
   matchesWhen,
 } from '../lib/format.js'
 import { EDU_PRESETS } from '../data/ladder.js'
+
+function groupJobs(jobs, group) {
+  if (group === 'category') {
+    const map = new Map()
+    for (const job of jobs) {
+      const key = job.category || 'other'
+      if (!map.has(key)) map.set(key, [])
+      map.get(key).push(job)
+    }
+    return [...map.entries()]
+      .sort((a, b) => (CATEGORIES[a[0]]?.label || a[0]).localeCompare(CATEGORIES[b[0]]?.label || b[0]))
+      .map(([key, items]) => ({ key, label: CATEGORIES[key]?.label || 'Other', items }))
+  }
+  if (group === 'location') {
+    const map = new Map()
+    for (const job of jobs) {
+      const key = (job.location || 'Unknown').split('·')[0].trim() || 'Unknown'
+      if (!map.has(key)) map.set(key, [])
+      map.get(key).push(job)
+    }
+    return [...map.entries()]
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .map(([key, items]) => ({ key, label: key, items }))
+  }
+  return [{ key: 'all', label: null, items: jobs }]
+}
 
 export default function Home() {
   const { jobs } = useStore()
@@ -30,6 +58,8 @@ export default function Home() {
   const mode = params.get('mode') ?? ''
   const when = params.get('when') ?? ''
   const sort = params.get('sort') ?? 'newest'
+  const view = params.get('view') === 'list' ? 'list' : 'grid'
+  const group = ['category', 'location'].includes(params.get('group')) ? params.get('group') : 'none'
   const cats = params.get('cat')?.split(',').filter(Boolean) ?? []
 
   const setParam = (key, value) =>
@@ -104,12 +134,19 @@ export default function Home() {
     )
     return list.sort((a, b) => {
       if (sort === 'pay') return (b.salaryMin ?? 0) - (a.salaryMin ?? 0)
+      if (sort === 'pay_low') return (a.salaryMin ?? Number.POSITIVE_INFINITY) - (b.salaryMin ?? Number.POSITIVE_INFINITY)
       if (sort === 'title') return a.title.localeCompare(b.title)
-      // At equal recency, locally posted jobs rank above imported feed jobs.
+      if (sort === 'title_desc') return b.title.localeCompare(a.title)
+      if (sort === 'oldest') {
+        const localRank = (j) => (j.origin === 'feed' ? 1 : 0)
+        return b.daysAgo - a.daysAgo || localRank(a) - localRank(b)
+      }
       const localRank = (j) => (j.origin === 'feed' ? 1 : 0)
       return a.daysAgo - b.daysAgo || localRank(a) - localRank(b)
     })
   }, [jobs, q, loc, edu, exp, pay, mode, when, cats, type, sort])
+
+  const grouped = useMemo(() => groupJobs(filtered, group), [filtered, group])
 
   const stairCounts = useMemo(() => {
     const counts = {}
@@ -131,7 +168,19 @@ export default function Home() {
     ]
   }, [jobs])
 
+  const freshJobs = useMemo(() => filtered.filter((j) => (j.daysAgo ?? 99) <= 2).slice(0, 6), [filtered])
+  const categoryCounts = useMemo(
+    () =>
+      Object.entries(CATEGORIES).map(([id, meta]) => ({
+        id,
+        label: meta.label,
+        count: jobs.filter((j) => j.category === id).length,
+      })),
+    [jobs],
+  )
+
   const hasQuery = q || loc || edu || exp || pay || mode || when || type || cats.length > 0
+  const Item = view === 'grid' ? JobCard : JobRow
 
   return (
     <>
@@ -204,7 +253,7 @@ export default function Home() {
 
       {/* Browse */}
       <section id="browse" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-10">
-        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="display-tight text-3xl">Open listings</h2>
             <p className="mt-1 text-sm text-mute">
@@ -212,28 +261,112 @@ export default function Home() {
               {hasQuery ? ' matching your filters' : ' on the board right now'}
             </p>
           </div>
+          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.08em] text-mute">
+            <span className="rounded-full border border-line bg-white px-3 py-1.5">View: {view}</span>
+            <span className="rounded-full border border-line bg-white px-3 py-1.5">Group: {group}</span>
+          </div>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[264px_1fr]">
+        {/* Sections */}
+        <div className="mb-8 grid gap-6 lg:grid-cols-2">
+          <section className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="display text-xl">Fresh opportunities</h3>
+              <span className="text-xs text-mute">Recently posted</span>
+            </div>
+            {freshJobs.length > 0 ? (
+              <ul className="mt-4 space-y-3">
+                {freshJobs.map((job) => (
+                  <li key={job.id} className="rounded-xl border border-line bg-[#fdfbf7] p-3">
+                    <Link to={`/jobs/${job.id}`} className="block">
+                      <p className="text-sm font-bold text-ink">{job.title}</p>
+                      <p className="mt-0.5 text-xs text-ink-soft">{job.org} · {job.location}</p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-4 text-sm text-mute">No fresh listings in the current selection. Clear filters to see more.</p>
+            )}
+          </section>
+
+          <section className="rounded-2xl border border-line bg-white p-5 shadow-sm">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="display text-xl">Browse by category</h3>
+              <span className="text-xs text-mute">Quick access</span>
+            </div>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {categoryCounts.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => {
+                    toggleCat(c.id)
+                    scrollToBrowse()
+                  }}
+                  className={`rounded-full border px-3 py-2 text-sm font-semibold transition-colors ${
+                    cats.includes(c.id)
+                      ? 'border-accent bg-signal text-accent'
+                      : 'border-line bg-[#fdfbf7] text-ink-soft hover:border-accent/50'
+                  }`}
+                >
+                  {c.label} <span className="ml-1 text-xs text-mute">{c.count}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
           <aside>
             <FilterPanel
               jobs={jobs}
               params={params}
               sort={sort}
+              view={view}
+              group={group}
               onToggle={(key, value) => (key === 'cat' ? toggleCat(value) : setParam(key, value))}
               onClear={clearFilters}
               onSort={(value) => setParam('sort', value)}
+              onView={(value) => setParam('view', value)}
+              onGroup={(value) => setParam('group', value)}
             />
           </aside>
 
-          <div className="overflow-hidden rounded-xl border border-line bg-white shadow-sm">
+          <div>
             {filtered.length > 0 ? (
-              filtered.map((job) => <JobRow key={job.id} job={job} />)
+              <div className="space-y-6">
+                {grouped.map((section) => (
+                  <section key={section.key} className="space-y-3">
+                    {section.label && (
+                      <div className="flex items-center justify-between gap-3">
+                        <h3 className="display text-2xl">{section.label}</h3>
+                        <span className="rounded-full border border-line bg-white px-3 py-1 text-xs font-semibold text-mute">
+                          {section.items.length} {section.items.length === 1 ? 'job' : 'jobs'}
+                        </span>
+                      </div>
+                    )}
+                    {view === 'grid' ? (
+                      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                        {section.items.map((job) => (
+                          <Item key={job.id} job={job} />
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="overflow-hidden rounded-xl border border-line bg-white shadow-sm">
+                        {section.items.map((job) => (
+                          <Item key={job.id} job={job} />
+                        ))}
+                      </div>
+                    )}
+                  </section>
+                ))}
+              </div>
             ) : (
-              <div className="p-8 text-center sm:p-12">
+              <div className="rounded-2xl border border-line bg-white p-8 text-center shadow-sm sm:p-12">
                 <p className="display text-xl">No listings match these filters.</p>
                 <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-mute">
-                  Try another education rung or clear the filters to see everything on the board.
+                  Try another filter, change grouping/view, or clear everything to see the full board.
                 </p>
                 <button
                   type="button"

@@ -41,14 +41,9 @@ function Check({ checked, label, count, onChange }) {
 }
 
 /**
- * Facets for the board. Every option shows how many listings it would return
- * (computed with the exact matcher the board uses — no optimistic numbers),
- * and each group is single-select: click again to clear.
- *
- * Education is the full 10-level ladder; the four hero stair presets expand
- * through EDU_PRESETS, so both controls drive the same `edu` param.
+ * Facets and arrangement controls for the board.
  */
-export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, sort }) {
+export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, sort, view = 'grid', group = 'none', onView, onGroup }) {
   const countBy = (fn) => jobs.filter(fn).length
   const activeCats = params.get('cat')?.split(',').filter(Boolean) ?? []
   const activeType = params.get('type') ?? ''
@@ -83,17 +78,50 @@ export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, s
         )}
       </div>
 
-      <FilterGroup title="Sort by">
-        <select
-          value={sort}
-          onChange={(e) => onSort(e.target.value)}
-          className="w-full rounded-lg border border-line bg-white px-2.5 py-2 text-sm text-ink hover:border-mute"
-          aria-label="Sort listings"
-        >
-          <option value="newest">Newest first</option>
-          <option value="pay">Pay: high to low</option>
-          <option value="title">Title A–Z</option>
-        </select>
+      <FilterGroup title="Arrange jobs">
+        <div className="space-y-3">
+          <label className="block text-sm text-ink-soft">
+            View
+            <select
+              value={view}
+              onChange={(e) => onView?.(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-line bg-white px-2.5 py-2 text-sm text-ink hover:border-mute"
+              aria-label="View layout"
+            >
+              <option value="grid">Grid cards</option>
+              <option value="list">List rows</option>
+            </select>
+          </label>
+          <label className="block text-sm text-ink-soft">
+            Group by
+            <select
+              value={group}
+              onChange={(e) => onGroup?.(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-line bg-white px-2.5 py-2 text-sm text-ink hover:border-mute"
+              aria-label="Group listings"
+            >
+              <option value="none">No grouping</option>
+              <option value="category">Category</option>
+              <option value="location">Location</option>
+            </select>
+          </label>
+          <label className="block text-sm text-ink-soft">
+            Sort by
+            <select
+              value={sort}
+              onChange={(e) => onSort(e.target.value)}
+              className="mt-1 w-full rounded-lg border border-line bg-white px-2.5 py-2 text-sm text-ink hover:border-mute"
+              aria-label="Sort listings"
+            >
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="pay">Pay: high to low</option>
+              <option value="pay_low">Pay: low to high</option>
+              <option value="title">Title A–Z</option>
+              <option value="title_desc">Title Z–A</option>
+            </select>
+          </label>
+        </div>
       </FilterGroup>
 
       <FilterGroup title="Education needed" hint="The full 10-rung ladder — every listing states its rung.">
