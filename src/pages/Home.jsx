@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import FilterPanel from '../components/FilterPanel.jsx'
 import JobRow from '../components/JobRow.jsx'
@@ -181,6 +181,44 @@ export default function Home() {
 
   const hasQuery = q || loc || edu || exp || pay || mode || when || type || cats.length > 0
   const Item = view === 'grid' ? JobCard : JobRow
+
+  useEffect(() => {
+    document.title = 'KAAMVORI — Job Vacancies, Internships & Jobs for 10th Pass and All Levels'
+    const desc = 'Find job vacancies, internships and work opportunities for 10th pass, below 10th, 12th, ITI, diploma, graduates and all education levels on KAAMVORI.'
+    let meta = document.querySelector('meta[name="description"]')
+    if (!meta) {
+      meta = document.createElement('meta')
+      meta.setAttribute('name', 'description')
+      document.head.appendChild(meta)
+    }
+    meta.setAttribute('content', desc)
+
+    const ld = {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'KAAMVORI',
+      url: 'https://kaamvori.vercel.app/',
+      description: desc,
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: 'https://kaamvori.vercel.app/?q={search_term_string}',
+        'query-input': 'required name=search_term_string',
+      },
+    }
+    const id = 'website-jsonld'
+    let script = document.getElementById(id)
+    if (!script) {
+      script = document.createElement('script')
+      script.id = id
+      script.type = 'application/ld+json'
+      document.head.appendChild(script)
+    }
+    script.textContent = JSON.stringify(ld)
+    return () => {
+      const s = document.getElementById(id)
+      if (s) s.remove()
+    }
+  }, [])
 
   return (
     <>

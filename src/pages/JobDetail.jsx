@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import CategoryTag from '../components/CategoryTag.jsx'
 import JobRow from '../components/JobRow.jsx'
@@ -44,6 +44,46 @@ export default function JobDetail() {
   const { user, role } = useAuth()
   const [applying, setApplying] = useState(false)
   const job = jobs.find((j) => j.id === id)
+
+  useEffect(() => {
+    if (!job) return
+    const title = `${job.title} at ${job.org} — ${job.location} | KAAMVORI`
+    document.title = title
+    const desc = `${job.title} at ${job.org} in ${job.location}. ${job.type || 'Job'} vacancy${job.education ? `, education: ${eduLabel(job.education) || job.education}` : ''}. Apply on KAAMVORI.`
+    let meta = document.querySelector('meta[name="description"]')
+    if (!meta) {
+      meta = document.createElement('meta')
+      meta.setAttribute('name', 'description')
+      document.head.appendChild(meta)
+    }
+    meta.setAttribute('content', desc.slice(0, 160))
+
+    const ld = {
+      '@context': 'https://schema.org',
+      '@type': 'JobPosting',
+      title: job.title,
+      description: [job.summary, ...(job.duties || []), ...(job.requirements || [])].filter(Boolean).join(' '),
+      datePosted: job.postedAt || undefined,
+      employmentType: job.type || undefined,
+      hiringOrganization: { '@type': 'Organization', name: job.org || 'Employer' },
+      jobLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', addressLocality: job.location || 'India', addressCountry: 'IN' } },
+      applicantLocationRequirements: job.workMode === 'remote' ? { '@type': 'Country', name: 'India' } : undefined,
+      directApply: true,
+    }
+    const id = 'jobposting-jsonld'
+    let script = document.getElementById(id)
+    if (!script) {
+      script = document.createElement('script')
+      script.id = id
+      script.type = 'application/ld+json'
+      document.head.appendChild(script)
+    }
+    script.textContent = JSON.stringify(ld)
+    return () => {
+      const s = document.getElementById(id)
+      if (s) s.remove()
+    }
+  }, [job])
 
   if (!job) {
     return (

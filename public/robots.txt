@@ -1,0 +1,11 @@
+﻿User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /me
+Disallow: /me/
+Disallow: /employer
+Disallow: /employer/
+Disallow: /login
+Disallow: /signup
+Sitemap: https://kaamvori.vercel.app/sitemap.xml
