@@ -1,7 +1,7 @@
-# Ladder — Supabase migrations
+# KaamVori — Supabase migrations
 
-Shared project: **every Ladder table/bucket is prefixed `ladder_`** so it never
-collides with other apps in this database.
+Shared project: **every KaamVori table/bucket is prefixed `ladder_`** so it never
+collides with other apps in this database. (Prefix kept for schema compatibility.)
 
 ## Apply the migrations
 

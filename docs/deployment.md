@@ -1,4 +1,4 @@
-# Ladder — deployment (Vercel) & operations
+# KaamVori — deployment (Vercel) & operations
 
 ## Frontend (Vercel)
 

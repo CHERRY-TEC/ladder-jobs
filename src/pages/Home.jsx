@@ -141,13 +141,13 @@ export default function Home() {
           <div className="grid items-end gap-10 lg:grid-cols-[1.1fr_1fr]">
             <div>
               <h1 className="display-tight text-5xl sm:text-6xl lg:text-7xl">
-                Every job,
+                Every Person
                 <br />
-                <span className="hl">every rung.</span>
+                <span className="hl">Deserves an Opportunity.</span>
               </h1>
               <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-soft">
-                Housekeeping work, internships, delivery gigs, skilled trades, office roles and
-                senior jobs like HR — one board that says up front what education each job needs.
+                KaamVori brings together housekeeping work, internships, delivery gigs, skilled trades,
+                office roles and professional jobs — one board that says up front what education each job needs.
               </p>
 
               <form onSubmit={runSearch} className="mt-7 flex flex-col gap-2 sm:flex-row">

@@ -45,10 +45,10 @@ export default function Footer() {
         <div>
           <div className="flex items-center gap-2">
             <Logo className="h-8 w-8" />
-            <span className="display text-xl">Ladder</span>
+            <span className="display text-xl">KaamVori</span>
           </div>
           <p className="mt-3 max-w-56 text-sm leading-relaxed text-ink-soft">
-            Every job, every rung — from your street to the top floor.
+            Every Person Deserves an Opportunity.
           </p>
         </div>
 
@@ -66,7 +66,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <h2 className="text-sm font-bold text-ink">On Ladder</h2>
+          <h2 className="text-sm font-bold text-ink">On KaamVori</h2>
           <ul className="mt-3 space-y-2 text-sm text-ink-soft">
             <li>
               <Link className="hover:text-accent" to="/saved">
@@ -90,14 +90,14 @@ export default function Footer() {
           <h2 className="text-sm font-bold text-ink">Good to know</h2>
           <p className="mt-3 text-sm leading-relaxed text-ink-soft">
             Demo listings are labelled as sample data. Feed listings show their original source
-            and link to it — Ladder never asks you to pay for a job.
+            and link to it — KaamVori never asks you to pay for a job.
           </p>
         </div>
       </div>
 
       <div className="border-t border-line">
         <div className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-5 text-xs text-mute sm:flex-row sm:items-center sm:justify-between">
-          <span>© 2026 Ladder · Sample data for demonstration</span>
+          <span>© 2026 KaamVori · Sample data for demonstration</span>
           <span
             data-testid="backend-status"
             className={backend === 'ready' ? 'text-accent' : undefined}

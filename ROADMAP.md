@@ -1,9 +1,9 @@
-# Ladder 2.0 — Development Roadmap
+# KaamVori — Development Roadmap
 
 Living checklist. Update status after each verified phase.
 
 **Stack:** React 19 · Vite 8 · Tailwind CSS v4 · React Router 7 · Supabase (Auth, PostgreSQL, Storage) · Vercel
-**Supabase project:** existing `cabvhwousbdkmfzisfin` (tables prefixed `ladder_` to avoid collisions with other apps in the same project)
+**Supabase project:** existing `cabvhwousbdkmfzisfin` (tables remain prefixed `ladder_` for schema compatibility in the shared project)
 
 ---
 

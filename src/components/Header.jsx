@@ -19,9 +19,9 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:gap-6">
-        <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="Ladder home">
+        <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="KaamVori home">
           <Logo className="h-8 w-8" />
-          <span className="display text-xl">Ladder</span>
+          <span className="display text-xl">KaamVori</span>
         </Link>
 
         <nav className="ml-auto flex items-center gap-1 sm:gap-2" aria-label="Main">
