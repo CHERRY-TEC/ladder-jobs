@@ -6,8 +6,8 @@ import { isFresh, relTime } from '../lib/format.js'
 
 export default function JobRow({ job }) {
   return (
-    <article className="relative border-b border-line bg-white transition-colors last:border-b-0 hover:bg-[#f7f6f2]">
-      <Link to={`/jobs/${job.id}`} className="block p-4 pr-14 sm:p-5 sm:pr-16">
+    <article className="relative border-b border-line bg-white transition-colors last:border-b-0 hover:bg-[#fbf8f2]">
+      <Link to={`/jobs/${job.id}`} className="block p-5 pr-14 sm:p-6 sm:pr-16">
         <div className="flex flex-wrap items-center gap-2">
           <CategoryTag category={job.category} />
           {job.mine && (

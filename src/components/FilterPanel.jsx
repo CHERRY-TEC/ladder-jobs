@@ -69,9 +69,9 @@ export default function FilterPanel({ jobs, params, onToggle, onClear, onSort, s
     params.get('loc')
 
   return (
-    <div className="overflow-hidden rounded-xl border border-line bg-white">
-      <div className="flex items-center justify-between gap-2 border-b border-line px-4 py-3">
-        <h2 className="display text-base">Filters</h2>
+    <div className="overflow-hidden rounded-xl border border-line bg-white shadow-sm">
+      <div className="flex items-center justify-between gap-2 border-b border-line bg-[#fdfbf7] px-4 py-3.5">
+        <h2 className="display text-lg">Filters</h2>
         {hasFilters && (
           <button
             type="button"

@@ -136,8 +136,8 @@ export default function Home() {
   return (
     <>
       {/* Hero */}
-      <section className="border-b border-line bg-white">
-        <div className="mx-auto max-w-6xl px-4 py-10 sm:py-14">
+      <section className="border-b border-line bg-gradient-to-b from-white to-[#f3efe7]">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:py-16 lg:py-20">
           <div className="grid items-end gap-10 lg:grid-cols-[1.1fr_1fr]">
             <div>
               <h1 className="display-tight text-5xl sm:text-6xl lg:text-7xl">
@@ -173,9 +173,9 @@ export default function Home() {
                 />
                 <button
                   type="submit"
-                  className="rounded-lg bg-accent px-6 py-3 font-semibold text-white transition-colors hover:bg-accent-hover"
+                  className="rounded-lg bg-accent px-7 py-3 font-semibold text-white shadow-sm transition-colors hover:bg-accent-hover"
                 >
-                  Search
+                  Search jobs
                 </button>
               </form>
             </div>
@@ -191,12 +191,12 @@ export default function Home() {
           {stats.map((stat, i) => (
             <div
               key={stat.label}
-              className={`py-5 pr-4 ${i > 0 ? 'sm:border-l sm:border-line sm:pl-6' : ''} ${
+              className={`py-6 pr-4 ${i > 0 ? 'sm:border-l sm:border-line sm:pl-6' : ''} ${
                 i % 2 === 1 ? 'border-l border-line pl-4 sm:pl-6' : ''
               }`}
             >
-              <dt className="text-[13px] font-semibold text-mute">{stat.label}</dt>
-              <dd className="display-tight mt-1 text-3xl">{stat.value}</dd>
+              <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-mute">{stat.label}</dt>
+              <dd className="display-tight mt-2 text-3xl text-ink">{stat.value}</dd>
             </div>
           ))}
         </dl>
@@ -226,7 +226,7 @@ export default function Home() {
             />
           </aside>
 
-          <div className="overflow-hidden rounded-xl border border-line bg-white">
+          <div className="overflow-hidden rounded-xl border border-line bg-white shadow-sm">
             {filtered.length > 0 ? (
               filtered.map((job) => <JobRow key={job.id} job={job} />)
             ) : (

@@ -40,16 +40,17 @@ export default function Footer() {
   }[backend]
 
   return (
-    <footer className="mt-16 border-t border-line bg-white">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:grid-cols-2 lg:grid-cols-4">
+    <footer className="mt-20 border-t border-line bg-[#f3efe7]">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <div className="flex items-center gap-2">
-            <Logo className="h-8 w-8" />
-            <span className="display text-xl">KAAMVORI</span>
+          <div className="flex items-center gap-2.5">
+            <Logo className="h-9 w-9" />
+            <span className="display text-xl tracking-wide">KAAMVORI</span>
           </div>
-          <p className="mt-3 max-w-56 text-sm leading-relaxed text-ink-soft">
+          <p className="mt-4 max-w-60 text-sm leading-relaxed text-ink-soft">
             Every Person Deserves an Opportunity.
           </p>
+          <p className="mt-3 text-xs font-semibold uppercase tracking-[0.12em] text-mute">Trusted opportunities, clearly presented</p>
         </div>
 
         <div>

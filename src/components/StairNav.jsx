@@ -5,8 +5,8 @@ import { EDU_PRESETS, eduLabel } from '../data/ladder.js'
 // Each step expands onto the full 10-level ladder (see EDU_PRESETS.rungs).
 export default function StairNav({ counts, active, onPick }) {
   return (
-    <div>
-      <p className="mb-3 text-[13px] font-semibold text-mute">Pick your rung</p>
+    <div className="rounded-2xl border border-line bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:p-5">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.1em] text-mute">Choose your education level</p>
       <div className="flex items-end gap-2" role="group" aria-label="Filter by education level">
         {EDU_PRESETS.map((level, i) => {
           const isActive = active === level.id
@@ -17,10 +17,10 @@ export default function StairNav({ counts, active, onPick }) {
               onClick={() => onPick(level.id)}
               aria-pressed={isActive}
               style={{ height: `${112 + i * 34}px` }}
-              className={`flex flex-1 flex-col justify-end rounded-xl border p-3 text-left transition-transform hover:-translate-y-1 ${
+              className={`flex flex-1 flex-col justify-end rounded-xl border p-3 text-left transition-all hover:-translate-y-1 ${
                 isActive
-                  ? 'border-accent bg-accent text-white'
-                  : 'border-line bg-white text-ink hover:border-accent hover:bg-signal'
+                  ? 'border-accent bg-accent text-white shadow-sm'
+                  : 'border-line bg-[#fdfbf7] text-ink hover:border-accent/60 hover:bg-signal'
               }`}
             >
               <span className="display-tight text-2xl leading-none">{counts[level.id] ?? 0}</span>

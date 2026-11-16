@@ -17,11 +17,11 @@ export default function Header() {
   const accountLabel = profile?.full_name || (user?.email ?? '').split('@')[0] || 'Account'
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-paper/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center gap-3 px-4 sm:gap-6">
-        <Link to="/" className="flex shrink-0 items-center gap-2" aria-label="KAAMVORI home">
-          <Logo className="h-8 w-8" />
-          <span className="display text-xl">KAAMVORI</span>
+    <header className="sticky top-0 z-40 border-b border-line/80 bg-paper/95 shadow-[0_1px_0_rgba(31,42,55,0.04)] backdrop-blur">
+      <div className="mx-auto flex h-[4.25rem] max-w-6xl items-center gap-3 px-4 sm:gap-6">
+        <Link to="/" className="flex shrink-0 items-center gap-2.5" aria-label="KAAMVORI home">
+          <Logo className="h-9 w-9" />
+          <span className="display text-xl tracking-wide">KAAMVORI</span>
         </Link>
 
         <nav className="ml-auto flex items-center gap-1 sm:gap-2" aria-label="Main">
@@ -81,7 +81,7 @@ export default function Header() {
               </NavLink>
               <Link
                 to="/post"
-                className="ml-1 rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-accent-hover sm:px-4"
+                className="ml-1 rounded-lg bg-accent px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-accent-hover sm:px-5"
               >
                 Post a job
               </Link>
