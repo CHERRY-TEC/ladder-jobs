@@ -21,8 +21,8 @@ export default function JobRow({ job }) {
             </span>
           )}
           {job.source && (
-            <span className="rounded-full border border-line px-1.5 py-0.5 text-[11px] font-semibold text-mute">
-              via {job.source}
+            <span className="rounded-full border border-line px-1.5 py-0.5 text-[11px] font-semibold text-mute" title="External listing">
+              External · {job.source}
             </span>
           )}
         </div>

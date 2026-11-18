@@ -53,7 +53,7 @@ async function main() {
   const supabase = createClient(url, key, { auth: { persistSession: false } })
   const { data: jobs, error } = await supabase
     .from('ladder_jobs')
-    .select('id,title,summary,job_type,education_required,experience_required,work_mode,city,state,location_label,salary_label,org_name,published_at,updated_at,created_at,contact_label,source_name,ladder_employers(company_name)')
+    .select('id,title,summary,job_type,education_required,experience_required,work_mode,city,state,location_label,salary_label,org_name,published_at,updated_at,created_at,contact_label,source_name,source_url,origin,ladder_employers(company_name)')
     .eq('status', 'active')
     .order('published_at', { ascending: false })
     .limit(1000)
@@ -67,20 +67,26 @@ async function main() {
   for (const job of jobs) {
     const org = job.ladder_employers?.company_name || job.org_name || 'Employer'
     const loc = [job.city, job.state].filter(Boolean).join(', ') || job.location_label || 'India'
+    const isExternal = job.origin === 'feed' || Boolean(job.source_name)
+    const externalUrl = job.source_url || null
     const title = `${strip(job.title)} at ${strip(org)} — ${strip(loc)} | KAAMVORI`
-    const desc = strip(`${job.title} at ${org} in ${loc}. ${job.job_type || 'Job'} vacancy${job.education_required ? `, education: ${job.education_required}` : ''}. ${job.summary || ''}`).slice(0, 160)
+    const desc = isExternal
+      ? strip(`${job.title} at ${org} in ${loc}. External listing${job.source_name ? ` from ${job.source_name}` : ''}. View and apply on the original site.`).slice(0, 160)
+      : strip(`${job.title} at ${org} in ${loc}. ${job.job_type || 'Job'} vacancy${job.education_required ? `, education: ${job.education_required}` : ''}. Apply on KAAMVORI.`).slice(0, 160)
     const pageUrl = `${site}/jobs/${job.id}`
     const datePosted = (job.published_at || job.created_at || '').slice(0, 10) || undefined
+    const summaryShort = strip(job.summary || '').slice(0, 280)
 
     const ld = {
       '@context': 'https://schema.org',
       '@type': 'JobPosting',
       title: strip(job.title),
-      description: strip(job.summary || ''),
+      description: summaryShort.slice(0, 200),
       datePosted,
       employmentType: job.job_type || undefined,
       hiringOrganization: { '@type': 'Organization', name: strip(org) },
       jobLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', addressLocality: strip(loc), addressCountry: 'IN' } },
+      ...(isExternal && externalUrl ? { url: externalUrl, directApply: false } : { directApply: true }),
     }
 
     let html = template
@@ -96,15 +102,20 @@ async function main() {
     const ldTag = `<script type="application/ld+json">${JSON.stringify(ld)}</script>`
     html = html.replace('</head>', `    ${ldTag}\n  </head>`)
 
+    const applyLink = isExternal && externalUrl
+      ? `<p><a href="${esc(externalUrl)}" rel="noopener noreferrer">View &amp; apply on ${esc(strip(job.source_name || 'original site'))}</a></p>`
+      : `<p><a href="${pageUrl}">View and apply on KAAMVORI</a></p>`
+
     const body = `<main style="max-width:800px;margin:0 auto;padding:24px;font-family:system-ui,sans-serif;line-height:1.5">` +
-      `<p><a href="/">KAAMVORI</a> · Job vacancy</p>` +
+      `<p><a href="/">KAAMVORI</a> · ${isExternal ? 'External job listing' : 'Job vacancy'}</p>` +
       `<h1>${esc(strip(job.title))}</h1>` +
       `<p><strong>${esc(strip(org))}</strong> · ${esc(strip(loc))}</p>` +
       `<p><strong>Type:</strong> ${esc(strip(job.job_type || 'Job'))}` +
       `${job.education_required ? ` · <strong>Education:</strong> ${esc(strip(job.education_required))}` : ''}` +
       `${job.salary_label ? ` · <strong>Pay:</strong> ${esc(strip(job.salary_label))}` : ''}</p>` +
-      `<p>${esc(strip(job.summary || ''))}</p>` +
-      `<p><a href="${pageUrl}">View and apply on KAAMVORI</a></p>` +
+      (isExternal && job.source_name ? `<p><strong>Source:</strong> ${esc(strip(job.source_name))} (original listing)</p>` : '') +
+      `<p>${esc(summaryShort)}${strip(job.summary || '').length > 280 ? '…' : ''}</p>` +
+      applyLink +
       `</main>`
 
     html = html.replace('<div id="root"></div>', `<div id="root">${body}</div>`)

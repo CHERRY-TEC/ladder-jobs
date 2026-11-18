@@ -47,28 +47,34 @@ export default function JobDetail() {
 
   useEffect(() => {
     if (!job) return
+    const isExternal = job.origin === 'feed' || Boolean(job.source)
+    const sourceUrl = job.sourceUrl || (job.contact?.kind === 'link' ? job.contact.value : null)
     const title = `${job.title} at ${job.org} — ${job.location} | KAAMVORI`
     document.title = title
-    const desc = `${job.title} at ${job.org} in ${job.location}. ${job.type || 'Job'} vacancy${job.education ? `, education: ${eduLabel(job.education) || job.education}` : ''}. Apply on KAAMVORI.`
+    const descBase = isExternal
+      ? `${job.title} at ${job.org} in ${job.location}. External listing${job.source ? ` from ${job.source}` : ''}. View and apply on the original site.`
+      : `${job.title} at ${job.org} in ${job.location}. ${job.type || 'Job'} vacancy${job.education ? `, education: ${eduLabel(job.education) || job.education}` : ''}. Apply on KAAMVORI.`
     let meta = document.querySelector('meta[name="description"]')
     if (!meta) {
       meta = document.createElement('meta')
       meta.setAttribute('name', 'description')
       document.head.appendChild(meta)
     }
-    meta.setAttribute('content', desc.slice(0, 160))
+    meta.setAttribute('content', descBase.slice(0, 160))
 
+    const summaryText = (job.summary || '').replace(/\s+/g, ' ').trim()
+    const ldDesc = isExternal ? summaryText.slice(0, 200) : [summaryText, ...(job.duties || []), ...(job.requirements || [])].filter(Boolean).join(' ')
     const ld = {
       '@context': 'https://schema.org',
       '@type': 'JobPosting',
       title: job.title,
-      description: [job.summary, ...(job.duties || []), ...(job.requirements || [])].filter(Boolean).join(' '),
+      description: ldDesc,
       datePosted: job.postedAt || undefined,
       employmentType: job.type || undefined,
       hiringOrganization: { '@type': 'Organization', name: job.org || 'Employer' },
       jobLocation: { '@type': 'Place', address: { '@type': 'PostalAddress', addressLocality: job.location || 'India', addressCountry: 'IN' } },
       applicantLocationRequirements: job.workMode === 'remote' ? { '@type': 'Country', name: 'India' } : undefined,
-      directApply: true,
+      ...(isExternal && sourceUrl ? { url: sourceUrl, directApply: false } : { directApply: true }),
     }
     const id = 'jobposting-jsonld'
     let script = document.getElementById(id)
@@ -101,8 +107,13 @@ export default function JobDetail() {
   }
 
   const saved = favorites.includes(job.id)
-  const href = contactHref(job.contact)
+  const isExternal = job.origin === 'feed' || Boolean(job.source)
+  const externalUrl = job.sourceUrl || (job.contact?.kind === 'link' ? job.contact.value : null)
+  const href = contactHref(job.contact) || externalUrl
   const similar = jobs.filter((j) => j.category === job.category && j.id !== job.id).slice(0, 3)
+  const displaySummary = isExternal
+    ? `${(job.summary || '').replace(/\s+/g, ' ').trim().slice(0, 280)}${(job.summary || '').length > 280 ? '…' : ''}`
+    : job.summary
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
@@ -119,6 +130,11 @@ export default function JobDetail() {
                 Posted by you
               </span>
             )}
+            {isExternal && (
+              <span className="rounded-full border border-line px-1.5 py-0.5 text-[11px] font-semibold text-mute">
+                External listing{job.source ? ` · ${job.source}` : ''}
+              </span>
+            )}
             {isFresh(job.daysAgo) && (
               <span className="rounded-full bg-signal px-1.5 py-0.5 text-[11px] font-semibold text-accent">
                 New
@@ -131,22 +147,26 @@ export default function JobDetail() {
           <p className="mt-1 text-sm text-mute">
             {job.location} · {job.type} · {eduLabel(job.education) ?? 'Any education'} · {relTime(job.daysAgo)}
           </p>
-          {job.source && (
-            <p className="mt-1 text-sm text-mute">
-              Listing source:{' '}
-              <a
-                href={job.sourceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-accent underline underline-offset-2 hover:text-accent-hover"
-              >
-                {job.source}
-              </a>{' '}
-              · original external listing
-            </p>
+          {isExternal && (
+            <div className="mt-4 rounded-lg border border-line bg-[#fdfbf7] p-4 text-sm text-ink-soft">
+              <p className="font-semibold text-ink">External listing from {job.source || 'another site'}</p>
+              <p className="mt-1">
+                This job is shown with source attribution. For full, up-to-date details and to apply, use the original listing.
+              </p>
+              {externalUrl && (
+                <a
+                  href={externalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-2 inline-block font-semibold text-accent underline underline-offset-2 hover:text-accent-hover"
+                >
+                  View original listing on {job.source || 'source'}
+                </a>
+              )}
+            </div>
           )}
 
-          <p className="mt-6 text-base leading-relaxed text-ink-soft">{job.summary}</p>
+          <p className="mt-6 text-base leading-relaxed text-ink-soft">{displaySummary}</p>
 
           <Points title="What you'll do" items={job.duties} />
           <Points title="Who can apply" items={job.requirements} />
@@ -154,20 +174,24 @@ export default function JobDetail() {
           <section className="mt-8 border-t border-line pt-6">
             <h2 className="display text-xl">How to apply</h2>
             <p className="mt-2 text-[15px] text-ink-soft">
-              {job.contact?.kind === 'phone'
-                ? 'Call the number below during working hours.'
-                : job.contact?.kind === 'email'
-                  ? 'Send your details by email.'
-                  : job.contact?.kind === 'link'
-                    ? 'Apply through the link below.'
-                    : 'Reach out using the contact below.'}
+              {isExternal
+                ? `This is an external listing${job.source ? ` from ${job.source}` : ''}. Apply on the original site for the latest details and application process.`
+                : job.contact?.kind === 'phone'
+                  ? 'Call the number below during working hours.'
+                  : job.contact?.kind === 'email'
+                    ? 'Send your details by email.'
+                    : job.contact?.kind === 'link'
+                      ? 'Apply through the link below.'
+                      : 'Reach out using the contact below.'}
             </p>
             {href ? (
               <a
                 href={href}
+                target={isExternal || job.contact?.kind === 'link' ? '_blank' : undefined}
+                rel={isExternal || job.contact?.kind === 'link' ? 'noopener noreferrer' : undefined}
                 className="mt-4 inline-block rounded-lg bg-accent px-5 py-3 font-semibold text-white shadow-sm transition-colors hover:bg-accent-hover"
               >
-                {job.contact.label}
+                {isExternal ? `View & apply on ${job.source || 'original site'}` : job.contact?.label || 'Apply'}
               </a>
             ) : job.contact?.value ? (
               <p className="mt-4 font-semibold">{job.contact.value}</p>
@@ -206,7 +230,7 @@ export default function JobDetail() {
           </dl>
 
           <div className="space-y-2 border-t border-line p-4">
-            {user && role === 'seeker' && !job.mine && (
+            {!isExternal && user && role === 'seeker' && !job.mine && (
               <button
                 type="button"
                 onClick={() => setApplying(true)}
@@ -231,9 +255,11 @@ export default function JobDetail() {
             {href && (
               <a
                 href={href}
+                target={isExternal || job.contact?.kind === 'link' ? '_blank' : undefined}
+                rel={isExternal || job.contact?.kind === 'link' ? 'noopener noreferrer' : undefined}
                 className="block w-full rounded-lg bg-accent px-4 py-3 text-center font-semibold text-white transition-colors hover:bg-accent-hover"
               >
-                {job.contact.label}
+                {isExternal ? `View & apply on ${job.source || 'original site'}` : job.contact?.label || 'Apply'}
               </a>
             )}
           </div>
